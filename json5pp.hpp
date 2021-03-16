@@ -137,7 +137,7 @@ public:
   using null_type = std::nullptr_t;
   using boolean_type = bool;
   using number_type = double;
-  using integer_type = int;
+  using integer_type = long long;
   using number_i_type = integer_type;
   using string_type = std::string;
   using string_p_type = const char*;
@@ -159,7 +159,7 @@ public:
    * @brief JSON value constructor for "null" type.
    * @param null A dummy argument for nullptr
    */
-  value(null_type null) noexcept : type(TYPE_NULL) {}
+  value(null_type) noexcept : type(TYPE_NULL) {}
 
   /**
    * @brief JSON value constructor for "boolean" type.
@@ -591,7 +591,7 @@ public:
    * @brief Assign null value.
    * @param null A dummy value.
    */
-  value& operator=(null_type null)
+  value& operator=(null_type)
   {
     release();
     return *this;
@@ -786,7 +786,7 @@ public:
    * @return An updated parser object
    */
   template <flags_type S, flags_type C>
-  parser<((F&~C)|S)&M> operator>>(const manipulator_flags<S,C>& manip)
+  parser<((F&~C)|S)&M> operator>>(const manipulator_flags<S,C>& manip __attribute__((unused)))
   {
     return parser<((F&~C)|S)&M>(istream);
   }
@@ -904,7 +904,7 @@ private:
           }
           // no valid comments
         }
-        /* no-break */
+        // fall through
       default:
         return ch;
       } /* switch(ch) */
@@ -1171,7 +1171,7 @@ private:
       switch (ch) {
       case '-':
         exp_negative = true;
-        /* no-break */
+        // fall through
       case '+':
         ch = istream.get();
         break;
@@ -1290,12 +1290,12 @@ private:
             }
             continue;
           }
-          /* no-break */
+          // fall through
         case '\n':
           if (has_flag(flags::multi_line_string)) {
             continue;
           }
-          /* no-break */
+          // fall through
         default:
           throw syntax_error(ch, context);
         }
